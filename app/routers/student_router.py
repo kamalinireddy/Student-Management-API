@@ -1,4 +1,8 @@
-from fastapi import APIRouter, Header, Response
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+
 from app.schemas.student_schema import (
     Student,
     StudentUpdate,
@@ -17,42 +21,64 @@ from app.services.student_service import (
 
 router = APIRouter()
 
+
 # Home API
 @router.get("/")
 def home():
     return {"message": "Welcome to Student Management API"}
 
+
 # Get all students
 @router.get("/students", response_model=list[StudentResponse])
-def get_all_students_route():
-    return get_students()
+def get_all_students_route(db: Session = Depends(get_db)):
+    return get_students(db)
+
 
 # Get one student
 @router.get("/students/{id}", response_model=StudentResponse)
-def get_student_route(id: int):
-    return get_student(id)
+def get_student_route(id: int, db: Session = Depends(get_db)):
+    return get_student(db, id)
+
 
 # Create student
 @router.post("/students", status_code=201, response_model=StudentResponse)
-def create_student_route(student: Student):
-    return create_student(student)
+def create_student_route(student: Student, db: Session = Depends(get_db)):
+    return create_student(db, student)
+
 
 # Replace entire student
 @router.put("/students/{id}", response_model=StudentResponse)
-def update_student_route(id: int, student: Student):
-    return update_student(id, student)
+def update_student_route(
+    id: int,
+    student: Student,
+    db: Session = Depends(get_db)
+):
+    return update_student(db, id, student)
+
 
 # Update selected fields
 @router.patch("/students/{id}", response_model=StudentResponse)
-def patch_student_route(id: int, student: StudentUpdate):
-    return patch_student(id, student)
+def patch_student_route(
+    id: int,
+    student: StudentUpdate,
+    db: Session = Depends(get_db)
+):
+    return patch_student(db, id, student)
+
 
 # Delete student
 @router.delete("/students/{id}")
-def remove_student_route(id: int):
-    return remove_student(id)
+def remove_student_route(
+    id: int,
+    db: Session = Depends(get_db)
+):
+    return remove_student(db, id)
+
 
 # Search students
-@router.get("/students/search")
-def search_students_route(cgpa: float):
-    return search_students(cgpa)
+@router.get("/students/search", response_model=list[StudentResponse])
+def search_students_route(
+    cgpa: float,
+    db: Session = Depends(get_db)
+):
+    return search_students(db, cgpa)

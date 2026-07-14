@@ -1,72 +1,83 @@
+from sqlalchemy.orm import Session
+
+from app.models.student_model import Student as StudentDB
+from app.schemas.student_schema import Student, StudentUpdate
+
 from app.repositories.student_repository import (
     get_all_students,
     find_student,
     add_student,
     delete_student,
-    students,
 )
 
-def get_students():
-    return get_all_students()
+
+# Get all students
+def get_students(db: Session):
+    return get_all_students(db)
 
 
-def get_student(id: int):
-    return find_student(id)
+# Get one student
+def get_student(db: Session, id: int):
+    return find_student(db, id)
 
 
-def create_student(student):
+# Create student
+def create_student(db: Session, student: Student):
 
-    new_student = {
-        "id": len(students) + 1,
-        "name": student.name,
-        "cgpa": student.cgpa
-    }
+    new_student = StudentDB(
+        name=student.name,
+        cgpa=student.cgpa
+    )
 
-    add_student(new_student)
-
-    return new_student
+    return add_student(db, new_student)
 
 
-def update_student(id: int, student):
+# Replace entire student
+def update_student(db: Session, id: int, student: Student):
 
-    existing_student = find_student(id)
+    existing_student = find_student(db, id)
 
-    existing_student["name"] = student.name
-    existing_student["cgpa"] = student.cgpa
+    existing_student.name = student.name
+    existing_student.cgpa = student.cgpa
+
+    db.commit()
+    db.refresh(existing_student)
 
     return existing_student
 
 
-def patch_student(id: int, student):
+# Update selected fields
+def patch_student(db: Session, id: int, student: StudentUpdate):
 
-    existing_student = find_student(id)
+    existing_student = find_student(db, id)
 
     if student.name is not None:
-        existing_student["name"] = student.name
+        existing_student.name = student.name
 
     if student.cgpa is not None:
-        existing_student["cgpa"] = student.cgpa
+        existing_student.cgpa = student.cgpa
+
+    db.commit()
+    db.refresh(existing_student)
 
     return existing_student
 
 
-def remove_student(id: int):
+# Delete student
+def remove_student(db: Session, id: int):
 
-    student = find_student(id)
+    student = find_student(db, id)
 
-    delete_student(student)
+    delete_student(db, student)
 
     return {
         "message": "Student deleted successfully"
     }
 
 
-def search_students(cgpa: float):
+# Search students
+def search_students(db: Session, cgpa: float):
 
-    result = []
-
-    for student in students:
-        if student["cgpa"] == cgpa:
-            result.append(student)
-
-    return result
+    return db.query(StudentDB).filter(
+        StudentDB.cgpa == cgpa
+    ).all()

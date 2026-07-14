@@ -1,28 +1,36 @@
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
-# Temporary Database
-students = [
-    {"id": 1, "name": "Rahul", "cgpa": 8.2},
-    {"id": 2, "name": "Sara", "cgpa": 9.1},
-]
-
-def find_student(id: int):
-    for student in students:
-        if student["id"] == id:
-            return student
-
-    raise HTTPException(
-        status_code=404,
-        detail="Student not found"
-    )
-def get_all_students():
-    return students
+from app.models.student_model import Student
 
 
-def add_student(student):
-    students.append(student)
+# Get all students
+def get_all_students(db: Session):
+    return db.query(Student).all()
+
+
+# Get one student
+def find_student(db: Session, id: int):
+    student = db.query(Student).filter(Student.id == id).first()
+
+    if student is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Student not found"
+        )
+
     return student
 
 
-def delete_student(student):
-    students.remove(student)
+# Create student
+def add_student(db: Session, student: Student):
+    db.add(student)
+    db.commit()
+    db.refresh(student)
+    return student
+
+
+# Delete student
+def delete_student(db: Session, student: Student):
+    db.delete(student)
+    db.commit()
