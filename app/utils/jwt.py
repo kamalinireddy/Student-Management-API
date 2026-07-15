@@ -2,12 +2,11 @@ from datetime import datetime, timedelta
 
 from jose import jwt
 
-SECRET_KEY = "my_super_secret_key"
-
-ALGORITHM = "HS256"
-
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
+from app.config import (
+    SECRET_KEY,
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+)
 
 def create_access_token(data: dict):
 
