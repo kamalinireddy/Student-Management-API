@@ -10,7 +10,7 @@ class UserCreate(BaseModel):
 
 # Used while logging in
 class UserLogin(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
 

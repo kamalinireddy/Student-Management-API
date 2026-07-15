@@ -8,7 +8,20 @@ from app.models.user_model import User
 from app.routers.student_router import router as student_router
 from app.routers.user_router import router as user_router
 
-app = FastAPI()
+app = FastAPI(
+    title="Student Management API",
+    description="""
+A FastAPI backend project demonstrating:
+
+- CRUD Operations
+- SQLAlchemy ORM
+- SQLite Database
+- JWT Authentication
+- Password Hashing
+- Layered Architecture (Router → Service → Repository)
+""",
+    version="1.0.0"
+)
 
 Base.metadata.create_all(bind=engine)
 
