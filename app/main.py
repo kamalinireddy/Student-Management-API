@@ -15,7 +15,7 @@ A FastAPI backend project demonstrating:
 
 - CRUD Operations
 - SQLAlchemy ORM
-- SQLite Database
+- PostgreSQL Database
 - JWT Authentication
 - Password Hashing
 - Layered Architecture (Router → Service → Repository)
