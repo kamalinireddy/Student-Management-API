@@ -1,3 +1,4 @@
+##a blueprint is describing a what valid data should look like for a user.
 from pydantic import BaseModel, EmailStr
 
 

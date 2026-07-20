@@ -1,6 +1,8 @@
+#FastAPI() = creates the entire application. APIRouter() creates a mini application that contains related endpoints.
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+#python has already executed it while importing it in main.py. Python keeps imported modules in memory (sys.modules). So it simply reuses the already-loaded module.
 from app.models.user_model import User
 from app.dependencies import get_current_user
 from app.database import get_db
@@ -21,7 +23,11 @@ from app.services.student_service import (
     search_students,
 )
 
+#APIRouter() is used to create separate groups of API routes in different files, making the application modular and easier to organize.
+#These routers are then registered with the main FastAPI application using app.include_router().
+#tags are used to group related endpoints together in the automatically generated API documentation (Swagger UI and ReDoc)
 router = APIRouter(
+    #Every endpoint in this router will appear under the "Students" section in Swagger UI.
     tags=["Students"]
 )
 

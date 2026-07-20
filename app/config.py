@@ -1,3 +1,5 @@
+#is used to read environment variables from a .env file and set them as environment variables in the operating system. 
+# This allows you to keep sensitive information, such as database credentials and secret keys, out of your codebase and version control system.
 from dotenv import load_dotenv
 import os
 

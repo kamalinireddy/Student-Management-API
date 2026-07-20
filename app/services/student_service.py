@@ -1,3 +1,4 @@
+#business logic for student operations.
 from sqlalchemy.orm import Session
 
 from app.models.student_model import Student as StudentDB
